@@ -48,5 +48,5 @@ jobs:
                       # - Map host port 3000 → container port 80
                       sudo docker run -d \
                         --name react-app \
-                        -p 3000:80 \
+                        -p 80:80 \
                         react-app:latest
