@@ -36,5 +36,5 @@ jobs:
                       # Run the new container
                       sudo docker run -d \
                         --name react-app \
-                        -p 80:80 \
+                        -p 8080:80 \
                         react-app:latest
