@@ -20,18 +20,11 @@ jobs:
                   key: ${{ secrets.EC2_SSH_KEY }}
                   port: 22
                   script: |
-                      # Navigate to the actual app directory
+                      
+                      # FRONTEND DEPLOYMENT
                       cd /home/ubuntu/react-app
-
-                      # Pull the latest code
                       git pull origin main
-
-                      # Stop and remove existing container if any
                       sudo docker stop react-app || true
                       sudo docker rm react-app || true
-
-                      # Build Docker image
                       sudo docker build -t react-app:latest .
-
-                      # Run the new container
                       sudo docker run -d --name react-app -p 80:80  react-app:latest
