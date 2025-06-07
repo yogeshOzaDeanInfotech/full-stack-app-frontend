@@ -50,6 +50,3 @@ jobs:
                         --name react-app \
                         -p 3000:80 \
                         react-app:latest
-
-                      # Clean up any dangling (unused) Docker images 
-                      sudo docker image prune -f
