@@ -3,23 +3,26 @@ FROM node:23-alpine AS builder
 WORKDIR /app
 
 COPY package.json package-lock.json ./
+
 RUN npm ci
 
+# copy source & build
 COPY . .
+
 RUN npm run build
 
-# ──────────────── Serve Stage ────────────────
-FROM nginx:stable-alpine
+# ──────────────── Stage 2: serve ────────────────
 
-# Remove default HTML
+FROM nginx:stable-alpine
+# remove default static content
+
 RUN rm -rf /usr/share/nginx/html/*
 
-# Copy custom Nginx config
-COPY nginx.conf /etc/nginx/nginx.conf
-
-# Copy built app
+# copy built files
 COPY --from=builder /app/dist /usr/share/nginx/html
 
+# expose port 80
 EXPOSE 80
 
+# run nginx in foreground
 CMD ["nginx", "-g", "daemon off;"]
