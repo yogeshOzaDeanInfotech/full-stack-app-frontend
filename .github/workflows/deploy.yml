@@ -1,6 +1,5 @@
 name: CI/CD for React App
 
-# 1) Trigger this workflow on every push to "main"
 on:
     push:
         branches: [main]
@@ -10,43 +9,31 @@ jobs:
         runs-on: ubuntu-latest
 
         steps:
-            # 3) Step: Check out your repository code so we can deploy it
-            - name: Checkout
+            - name: Checkout code (local)
               uses: actions/checkout@v3
 
-            # 4) Step: SSH into your EC2 instance and run provisioning + deploy scripts
-            - name: Provision & Deploy on EC2
+            - name: SSH and Deploy to EC2
               uses: appleboy/ssh-action@v0.1.6
               with:
-                  # 4a) Which server to connect to (stored as a secret)
                   host: ${{ secrets.EC2_HOST }}
-
-                  # 4b) Which user on that server (Ubuntu AMIs use "ubuntu")
                   username: ubuntu
-
-                  # 4c) SSH private key (stored as a secret, exported from PuTTYgen or OpenSSH)
                   key: ${{ secrets.EC2_SSH_KEY }}
-
-                  # 4d) SSH port (standard is 22)
                   port: 22
-
-                  # 5) The actual shell script to run over SSH
                   script: |
-
+                      # Go to the app directory
                       cd /react-app
 
-                      git fetch origin main
+                      # Pull latest changes
+                      git pull origin main
 
-                      # Stop & remove any old container named "react-app"
-                      sudo docker stop react-app
-                      sudo docker rm   react-app
+                      # Stop and remove the old container if exists
+                      sudo docker stop react-app || true
+                      sudo docker rm react-app || true
 
-                      # Build the multi-stage Docker image defined in your Dockerfile
+                      # Build Docker image (assumes Dockerfile exists here)
                       sudo docker build -t react-app:latest .
 
-                      # Run the new container:
-                      # - Name it "react-app"
-                      # - Map host port 3000 → container port 80
+                      # Run the container on port 80
                       sudo docker run -d \
                         --name react-app \
                         -p 80:80 \
