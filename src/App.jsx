@@ -4,7 +4,7 @@ import { useEffect, useState } from "react";
 function App() {
     const [usersData, setusersData] = useState([]);
     const getData = async () => {
-        const data = await axios.get("http://localhost:5000/api/users");
+        const data = await axios.get("http://3.7.46.55/api/users");
         setusersData(data.data.users);
     };
 
