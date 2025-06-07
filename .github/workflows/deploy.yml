@@ -32,16 +32,17 @@ jobs:
 
                   # 5) The actual shell script to run over SSH
                   script: |
-                      cd /react-app
-                      git reset --hard origin/main
-                      git fetch origin main
 
-                      # Build the multi-stage Docker image defined in your Dockerfile
-                      sudo docker build -t react-app:latest .
+                      cd /react-app
+
+                      git fetch origin main
 
                       # Stop & remove any old container named "react-app"
                       sudo docker stop react-app
                       sudo docker rm   react-app
+
+                      # Build the multi-stage Docker image defined in your Dockerfile
+                      sudo docker build -t react-app:latest .
 
                       # Run the new container:
                       # - Name it "react-app"
